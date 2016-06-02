@@ -35,8 +35,6 @@
 #include "sensors/battery.h"
 #include "sensors/sensors.h"
 
-#include "io/statusindicator.h"
-
 #ifdef GPS
 #include "io/gps.h"
 #endif
@@ -127,7 +125,7 @@ static uint8_t beep_multiBeeps[MAX_MULTI_BEEPS + 2];
 
 
 // Beeper off = 0 Beeper on = 1
-static uint8_t beeperIsOn = 0;
+uint8_t beeperIsOn = 0;
 
 // Place in current sequence
 static uint16_t beeperPos = 0;
@@ -218,12 +216,8 @@ void beeper(beeperMode_e mode)
 
 void beeperSilence(void)
 {
-    BEEP_OFF;
-    warningLedDisable();
-    warningLedRefresh();
-
-
     beeperIsOn = 0;
+    BEEP_OFF;
 
     beeperNextToggleTime = 0;
     beeperPos = 0;
@@ -305,8 +299,6 @@ void beeperUpdate(void)
         beeperIsOn = 1;
         if (currentBeeperEntry->sequence[beeperPos] != 0) {
             BEEP_ON;
-            warningLedEnable();
-            warningLedRefresh();
             // if this was arming beep then mark time (for blackbox)
             if (
                 beeperPos == 0
@@ -319,8 +311,6 @@ void beeperUpdate(void)
         beeperIsOn = 0;
         if (currentBeeperEntry->sequence[beeperPos] != 0) {
             BEEP_OFF;
-            warningLedDisable();
-            warningLedRefresh();
         }
     }
 

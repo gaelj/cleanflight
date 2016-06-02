@@ -20,10 +20,33 @@
 
 #include <platform.h>
 
+#include "common/axis.h"
+#include "common/maths.h"
+
+#include "config/parameter_group.h"
+#include "config/runtime_config.h"
+
 #include "drivers/system.h"
 #include "drivers/gpio.h"
 #include "drivers/light_led.h"
 #include "drivers/sound_beeper.h"
+#include "drivers/serial.h"
+#include "drivers/sensor.h"
+#include "drivers/pwm_mapping.h"
+#include "drivers/accgyro.h"
+
+#include "io/serial_cli.h"
+#include "io/rc_controls.h"
+#include "io/beeper.h"
+
+#include "sensors/sensors.h"
+#include "sensors/acceleration.h"
+
+#include "flight/failsafe.h"
+#include "flight/imu.h"
+
+#include "mw.h"
+#include "scheduler.h"
 
 #include "statusindicator.h"
 
@@ -32,34 +55,46 @@ static uint32_t warningLedTimer = 0;
 typedef enum {
     WARNING_LED_OFF = 0,
     WARNING_LED_ON,
-    WARNING_LED_FLASH
+    WARNING_ARM_PREV_CLI,       // 2 flashes - CLI active in the configurator
+    WARNING_ARM_PREV_FAILSAFE,  // 3 flashes - Failsafe mode
+    WARNING_ARM_PREV_ANGLE,     // 4 flashes - Maximum arming angle exceeded
+    WARNING_ARM_PREV_CALIB,     // 5 flashes - Calibration active
+    WARNING_ARM_PREV_OVERLOAD   // 6 flashes - System overload
 } warningLedState_e;
 
 static warningLedState_e warningLedState = WARNING_LED_OFF;
+static uint8_t flashsLeft = 0;
 
-void warningLedResetTimer(void)
+warningLedState_e getWarningState(void)
 {
-    uint32_t now = millis();
-    warningLedTimer = now + 500000;
-}
+    if (isCalibrating()) {
+        return WARNING_ARM_PREV_CALIB;
+    }
+    if (rcModeIsActive(BOXFAILSAFE) || failsafePhase() == FAILSAFE_LANDED) {
+        return WARNING_ARM_PREV_FAILSAFE;
+    }
+    if (!imuIsAircraftArmable(armingConfig()->max_arm_angle)) {
+        return WARNING_ARM_PREV_ANGLE;
+    }
+    if (cliMode == 1) {
+        return WARNING_ARM_PREV_CLI;
+    }
+    if (isSystemOverloaded()) {
+        return WARNING_ARM_PREV_OVERLOAD;
+    }
+    if (beeperIsOn == 1) {
+        return WARNING_LED_ON;
+    }
 
-void warningLedEnable(void)
-{
-    warningLedState = WARNING_LED_ON;
-}
-
-void warningLedDisable(void)
-{
-    warningLedState = WARNING_LED_OFF;
-}
-
-void warningLedFlash(void)
-{
-    warningLedState = WARNING_LED_FLASH;
+    return WARNING_LED_OFF;
 }
 
 void warningLedRefresh(void)
 {
+    if (flashsLeft == 0) {
+        warningLedState = getWarningState();
+    }
+
     switch (warningLedState) {
         case WARNING_LED_OFF:
             LED0_OFF;
@@ -67,24 +102,29 @@ void warningLedRefresh(void)
         case WARNING_LED_ON:
             LED0_ON;
             break;
-        case WARNING_LED_FLASH:
-            LED0_TOGGLE;
+        default:
+            if (flashsLeft == 0) {
+                flashsLeft = 2 * warningLedState;
+                LED0_OFF;
+            } else {
+                flashsLeft--;
+                LED0_TOGGLE;
+            }
             break;
     }
 
     uint32_t now = micros();
-    warningLedTimer = now + 500000;
+    warningLedTimer = now + ((flashsLeft > 0) ? WARNING_LED_FAST_SPEED : WARNING_LED_SLOW_SPEED);
 }
 
 void warningLedUpdate(void)
 {
     uint32_t now = micros();
 
-    if ((int32_t)(now - warningLedTimer) < 0) {
-        return;
+    if ((int32_t)(now - warningLedTimer) > 0 || (beeperIsOn && warningLedState == WARNING_LED_OFF)
+            || (!beeperIsOn && warningLedState == WARNING_LED_ON)) {
+        warningLedRefresh();
     }
-
-    warningLedRefresh();
 }
 
 
