@@ -37,7 +37,6 @@
 
 #include "io/serial_cli.h"
 #include "io/rc_controls.h"
-#include "io/beeper.h"
 
 #include "sensors/sensors.h"
 #include "sensors/acceleration.h"
