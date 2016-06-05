@@ -53,76 +53,72 @@
 static uint32_t warningLedTimer = 0;
 
 typedef enum {
-    WARNING_LED_OFF = 0,
-    WARNING_LED_ON,
-    WARNING_ARM_PREV_CLI,       // 2 flashes - CLI active in the configurator
-    WARNING_ARM_PREV_FAILSAFE,  // 3 flashes - Failsafe mode
-    WARNING_ARM_PREV_ANGLE,     // 4 flashes - Maximum arming angle exceeded
-    WARNING_ARM_PREV_CALIB,     // 5 flashes - Calibration active
-    WARNING_ARM_PREV_OVERLOAD   // 6 flashes - System overload
-} warningLedState_e;
+    ARM_PREV_NONE = 0,
+    ARM_PREV_CLI,       // 2 flashes - CLI active in the configurator
+    ARM_PREV_FAILSAFE,  // 3 flashes - Failsafe mode
+    ARM_PREV_ANGLE,     // 4 flashes - Maximum arming angle exceeded
+    ARM_PREV_CALIB,     // 5 flashes - Calibration active
+    ARM_PREV_OVERLOAD   // 6 flashes - System overload
+} armingPreventedReason_e;
 
-static warningLedState_e warningLedState = WARNING_LED_OFF;
-static uint8_t flashsLeft = 0;
+static armingPreventedReason_e armingPreventionReason = ARM_PREV_NONE;
+static uint8_t flashesLeft = 0;
 
-warningLedState_e getWarningState(void)
+armingPreventedReason_e getArmingPreventionReason(void)
 {
     if (isCalibrating()) {
-        return WARNING_ARM_PREV_CALIB;
+        return ARM_PREV_CALIB;
     }
     if (rcModeIsActive(BOXFAILSAFE) || failsafePhase() == FAILSAFE_LANDED) {
-        return WARNING_ARM_PREV_FAILSAFE;
+        return ARM_PREV_FAILSAFE;
     }
     if (!imuIsAircraftArmable(armingConfig()->max_arm_angle)) {
-        return WARNING_ARM_PREV_ANGLE;
+        return ARM_PREV_ANGLE;
     }
-    if (cliMode == 1) {
-        return WARNING_ARM_PREV_CLI;
+    if (cliMode) {
+        return ARM_PREV_CLI;
     }
     if (isSystemOverloaded()) {
-        return WARNING_ARM_PREV_OVERLOAD;
+        return ARM_PREV_OVERLOAD;
     }
-    if (beeperIsOn == 1) {
-        return WARNING_LED_ON;
-    }
-
-    return WARNING_LED_OFF;
+    return ARM_PREV_NONE;
 }
 
 void warningLedRefresh(void)
 {
-    if (flashsLeft == 0) {
-        warningLedState = getWarningState();
+    if (flashesLeft == 0) {
+        armingPreventionReason = getArmingPreventionReason();
     }
 
-    switch (warningLedState) {
-        case WARNING_LED_OFF:
+    if (armingPreventionReason > ARM_PREV_NONE) {
+        if (flashesLeft == 0) {
+            flashesLeft = 2 * (armingPreventionReason + 1);
             LED0_OFF;
-            break;
-        case WARNING_LED_ON:
-            LED0_ON;
-            break;
-        default:
-            if (flashsLeft == 0) {
-                flashsLeft = 2 * warningLedState;
-                LED0_OFF;
-            } else {
-                flashsLeft--;
-                LED0_TOGGLE;
-            }
-            break;
+        } else {
+            flashesLeft--;
+            LED0_TOGGLE;
+        }
     }
 
     uint32_t now = micros();
-    warningLedTimer = now + ((flashsLeft > 0) ? WARNING_LED_FAST_SPEED : WARNING_LED_SLOW_SPEED);
+    warningLedTimer = now + ((flashesLeft > 0) ? WARNING_LED_FAST_SPEED : WARNING_LED_SLOW_SPEED);
+}
+
+void warningLedBeeper(bool on)
+{
+    if (armingPreventionReason == ARM_PREV_NONE) {
+        if (on) {
+            LED0_ON;
+        } else {
+            LED0_OFF;
+        }
+    }
 }
 
 void warningLedUpdate(void)
 {
     uint32_t now = micros();
-
-    if ((int32_t)(now - warningLedTimer) > 0 || (beeperIsOn && warningLedState == WARNING_LED_OFF)
-            || (!beeperIsOn && warningLedState == WARNING_LED_ON)) {
+    if ((int32_t)(now - warningLedTimer) > 0) {
         warningLedRefresh();
     }
 }

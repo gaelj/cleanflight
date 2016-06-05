@@ -20,4 +20,5 @@
 #define WARNING_LED_SLOW_SPEED  600000
 #define WARNING_LED_FAST_SPEED  200000
 
+void warningLedBeeper(bool on);
 void warningLedUpdate(void);
