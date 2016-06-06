@@ -52,16 +52,15 @@
 static uint32_t warningLedTimer = 0;
 
 typedef enum {
-    ARM_PREV_NONE = 0,
-    ARM_PREV_CLI,       // 2 flashes - CLI active in the configurator
-    ARM_PREV_FAILSAFE,  // 3 flashes - Failsafe mode
-    ARM_PREV_ANGLE,     // 4 flashes - Maximum arming angle exceeded
-    ARM_PREV_CALIB,     // 5 flashes - Calibration active
-    ARM_PREV_OVERLOAD   // 6 flashes - System overload
+    ARM_PREV_NONE       = 0,
+    ARM_PREV_CLI        = 0b0000000010101,  // 2 flashes - CLI active in the configurator
+    ARM_PREV_FAILSAFE   = 0b0000001010101,  // 3 flashes - Failsafe mode
+    ARM_PREV_ANGLE      = 0b0000101010101,  // 4 flashes - Maximum arming angle exceeded
+    ARM_PREV_CALIB      = 0b0010101010101,  // 5 flashes - Calibration active
+    ARM_PREV_OVERLOAD   = 0b1010101010101   // 6 flashes - System overload
 } armingPreventedReason_e;
 
-static armingPreventedReason_e armingPreventionReason = ARM_PREV_NONE;
-static uint8_t flashesLeft = 0;
+static uint32_t blinkMask = 0;
 
 armingPreventedReason_e getArmingPreventionReason(void)
 {
@@ -83,29 +82,27 @@ armingPreventedReason_e getArmingPreventionReason(void)
     return ARM_PREV_NONE;
 }
 
+
 void warningLedRefresh(void)
 {
-    if (flashesLeft == 0) {
-        armingPreventionReason = getArmingPreventionReason();
+    if (blinkMask <= 1) {  // skip interval for terminator bit, allow continuous on
+        blinkMask = getArmingPreventionReason();
     }
-
-    if (armingPreventionReason > ARM_PREV_NONE) {
-        if (flashesLeft == 0) {
-            flashesLeft = 2 * (armingPreventionReason + 1);
+    if (blinkMask) {
+        if (blinkMask & 1)
+            LED0_ON;
+        else
             LED0_OFF;
-        } else {
-            flashesLeft--;
-            LED0_TOGGLE;
-        }
+        blinkMask >>= 1;
     }
 
     uint32_t now = micros();
-    warningLedTimer = now + ((flashesLeft > 0) ? WARNING_LED_FAST_SPEED : WARNING_LED_SLOW_SPEED);
+    warningLedTimer = now + ((blinkMask > 1) ? WARNING_LED_FAST_SPEED : WARNING_LED_SLOW_SPEED);
 }
 
 void warningLedBeeper(bool on)
 {
-    if (armingPreventionReason == ARM_PREV_NONE) {
+    if (!blinkMask) {
         if (on) {
             LED0_ON;
         } else {
