@@ -17,8 +17,7 @@
 
 #pragma once
 
-#define WARNING_LED_SLOW_SPEED  600000
-#define WARNING_LED_FAST_SPEED  200000
+#define WARNING_LED_BLINK_DELAY  200000
 
 void warningLedBeeper(bool on);
 void warningLedUpdate(void);

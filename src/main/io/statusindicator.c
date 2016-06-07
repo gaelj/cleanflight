@@ -53,11 +53,11 @@ static uint32_t warningLedTimer = 0;
 
 typedef enum {
     ARM_PREV_NONE       = 0,
-    ARM_PREV_CLI        = 0x15,  // 0b0000000010101  2 flashes - CLI active in the configurator
-    ARM_PREV_FAILSAFE   = 0x55,  // 0b0000001010101  3 flashes - Failsafe mode
-    ARM_PREV_ANGLE      = 0x155, // 0b0000101010101  4 flashes - Maximum arming angle exceeded
-    ARM_PREV_CALIB      = 0x555, // 0b0010101010101  5 flashes - Calibration active
-    ARM_PREV_OVERLOAD   = 0x1555 // 0b1010101010101  6 flashes - System overload
+    ARM_PREV_CLI        = 0x00205, //         0b1000000101  2 flashes - CLI active in the configurator
+    ARM_PREV_FAILSAFE   = 0x00815, //       0b100000010101  3 flashes - Failsafe mode
+    ARM_PREV_ANGLE      = 0x02055, //     0b10000001010101  4 flashes - Maximum arming angle exceeded
+    ARM_PREV_CALIB      = 0x08155, //   0b1000000101010101  5 flashes - Calibration active
+    ARM_PREV_OVERLOAD   = 0x20555  // 0b100000010101010101  6 flashes - System overload
 } armingPreventedReason_e;
 
 static uint32_t blinkMask = 0;
@@ -97,7 +97,7 @@ void warningLedRefresh(void)
     }
 
     uint32_t now = micros();
-    warningLedTimer = now + ((blinkMask > 1) ? WARNING_LED_FAST_SPEED : WARNING_LED_SLOW_SPEED);
+    warningLedTimer = now + WARNING_LED_BLINK_DELAY;
 }
 
 void warningLedBeeper(bool on)
