@@ -15,6 +15,7 @@ supports the following:
 * AUX operated on/off switch.
 * GPS state.
 * RSSI level.
+* Battery level.
 
 Support for more than 32 LEDs is possible, it just requires additional development.
 
@@ -121,6 +122,7 @@ Note: It is perfectly possible to configure an LED to have all directions `NESWU
 * `G` - `G`PS state.
 * `S` - R`S`SSI level.
 * `B` - `B`link (flash twice) mode.
+* `L` - Battery `L`evel.
 
 `cc` specifies the color number (0 based index).
 
@@ -169,9 +171,25 @@ The LEDs will blink as many times as the satellite count, then pause and start a
 
 #### RSSI level
 
-This mode fades the LED current LED color to the previous/next color in the HSB color space depending on RSSI level.  When the
+This mode fades the current LED color to the previous/next color in the HSB color space depending on RSSI level.  When the
 RSSI level is at the mean value the color is unaffected, thus it can be mixed with orientation colors to indicate orientation and RSSI at
 the same time.  RSSI should normally be combined with Color or Mode/Orientation.
+
+#### Battery level
+
+This mode binds the LED color to remaining battery capacity.
+
+| Color      | Capacity |
+| ---------- | ---------|
+| Green      |   100%   |
+| Lime green |    80%   |
+| Yellow     |    60%   |
+| Orange     |    40%   |
+| Red        |    20%   |
+| Deep pink  |     0%   |
+    
+When Warning or Critial voltage is reached, LEDs will blink slowly or fast.
+Note: this mode requires a current sensor. If you don't have the actual device you can set up a virtual current sensor (see [Battery](Battery.md)).
 
 #### Blink
 

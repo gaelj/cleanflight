@@ -66,44 +66,44 @@ TEST(LedStripTest, parseLedStripConfig)
 {
     // given
     static const ledConfig_t expectedLedStripConfig[WS2811_LED_STRIP_LENGTH] = {
-            { CALCULATE_LED_XY( 9,  9), 0, LD(SOUTH) | LF(FLIGHT_MODE) | LF(WARNING) },
-            { CALCULATE_LED_XY(10, 10), 0, LD(SOUTH) | LF(FLIGHT_MODE) | LF(WARNING) },
-            { CALCULATE_LED_XY(11, 11), 0, LD(SOUTH) | LF(INDICATOR) | LF(ARM_STATE) },
-            { CALCULATE_LED_XY(11, 11), 0, LD(EAST)  | LF(INDICATOR) | LF(ARM_STATE) },
-            { CALCULATE_LED_XY(10, 10), 0, LD(EAST)  | LF(FLIGHT_MODE) },
+            { CALCULATE_LED_XY( 9,  9), 0, LD(SOUTH) , LF(FLIGHT_MODE) | LF(WARNING) },
+            { CALCULATE_LED_XY(10, 10), 0, LD(SOUTH) , LF(FLIGHT_MODE) | LF(WARNING) },
+            { CALCULATE_LED_XY(11, 11), 0, LD(SOUTH) , LF(INDICATOR) | LF(ARM_STATE) },
+            { CALCULATE_LED_XY(11, 11), 0, LD(EAST)  , LF(INDICATOR) | LF(ARM_STATE) },
+            { CALCULATE_LED_XY(10, 10), 0, LD(EAST)  , LF(FLIGHT_MODE) },
 
-            { CALCULATE_LED_XY(10,  5), 0, LD(SOUTH) | LF(FLIGHT_MODE) },
-            { CALCULATE_LED_XY(11,  4), 0, LD(SOUTH) | LF(FLIGHT_MODE) },
-            { CALCULATE_LED_XY(12,  3), 0, LD(SOUTH) | LF(INDICATOR) | LF(ARM_STATE) },
-            { CALCULATE_LED_XY(12,  2), 0, LD(NORTH) | LF(INDICATOR) | LF(ARM_STATE) },
-            { CALCULATE_LED_XY(11,  1), 0, LD(NORTH) | LF(FLIGHT_MODE) },
-            { CALCULATE_LED_XY(10,  0), 0, LD(NORTH) | LF(FLIGHT_MODE) },
+            { CALCULATE_LED_XY(10,  5), 0, LD(SOUTH) , LF(FLIGHT_MODE) },
+            { CALCULATE_LED_XY(11,  4), 0, LD(SOUTH) , LF(FLIGHT_MODE) },
+            { CALCULATE_LED_XY(12,  3), 0, LD(SOUTH) , LF(INDICATOR) | LF(ARM_STATE) },
+            { CALCULATE_LED_XY(12,  2), 0, LD(NORTH) , LF(INDICATOR) | LF(ARM_STATE) },
+            { CALCULATE_LED_XY(11,  1), 0, LD(NORTH) , LF(FLIGHT_MODE) },
+            { CALCULATE_LED_XY(10,  0), 0, LD(NORTH) , LF(FLIGHT_MODE) },
 
-            { CALCULATE_LED_XY( 7,  0), 0, LD(NORTH) | LF(FLIGHT_MODE) | LF(WARNING) },
-            { CALCULATE_LED_XY( 6,  0), 1, LD(NORTH) | LF(COLOR) | LF(WARNING) },
-            { CALCULATE_LED_XY( 5,  0), 1, LD(NORTH) | LF(COLOR) | LF(WARNING) },
-            { CALCULATE_LED_XY( 4,  0), 0, LD(NORTH) | LF(FLIGHT_MODE) | LF(WARNING) },
+            { CALCULATE_LED_XY( 7,  0), 0, LD(NORTH) , LF(FLIGHT_MODE) | LF(WARNING) },
+            { CALCULATE_LED_XY( 6,  0), 1, LD(NORTH) , LF(COLOR) | LF(WARNING) },
+            { CALCULATE_LED_XY( 5,  0), 1, LD(NORTH) , LF(COLOR) | LF(WARNING) },
+            { CALCULATE_LED_XY( 4,  0), 0, LD(NORTH) , LF(FLIGHT_MODE) | LF(WARNING) },
 
-            { CALCULATE_LED_XY( 2,  0), 0, LD(NORTH) | LF(FLIGHT_MODE) },
-            { CALCULATE_LED_XY( 1,  1), 0, LD(NORTH) | LF(FLIGHT_MODE) },
-            { CALCULATE_LED_XY( 0,  2), 0, LD(NORTH) | LF(INDICATOR) | LF(ARM_STATE) },
-            { CALCULATE_LED_XY( 0,  3), 0, LD(WEST)  | LF(INDICATOR) | LF(ARM_STATE) },
-            { CALCULATE_LED_XY( 1,  4), 0, LD(WEST)  | LF(FLIGHT_MODE) },
-            { CALCULATE_LED_XY( 2,  5), 0, LD(WEST)  | LF(FLIGHT_MODE) },
+            { CALCULATE_LED_XY( 2,  0), 0, LD(NORTH) , LF(FLIGHT_MODE) },
+            { CALCULATE_LED_XY( 1,  1), 0, LD(NORTH) , LF(FLIGHT_MODE) },
+            { CALCULATE_LED_XY( 0,  2), 0, LD(NORTH) , LF(INDICATOR) | LF(ARM_STATE) },
+            { CALCULATE_LED_XY( 0,  3), 0, LD(WEST)  , LF(INDICATOR) | LF(ARM_STATE) },
+            { CALCULATE_LED_XY( 1,  4), 0, LD(WEST)  , LF(FLIGHT_MODE) },
+            { CALCULATE_LED_XY( 2,  5), 0, LD(WEST)  , LF(FLIGHT_MODE) },
 
-            { CALCULATE_LED_XY( 1, 10), 0, LD(WEST)  | LF(FLIGHT_MODE) },
-            { CALCULATE_LED_XY( 0, 11), 0, LD(WEST)  | LF(INDICATOR) | LF(ARM_STATE) },
-            { CALCULATE_LED_XY( 0, 11), 0, LD(SOUTH) | LF(INDICATOR) | LF(ARM_STATE) },
-            { CALCULATE_LED_XY( 1, 10), 0, LD(SOUTH) | LF(FLIGHT_MODE) | LF(WARNING) },
-            { CALCULATE_LED_XY( 2,  9), 0, LD(SOUTH) | LF(FLIGHT_MODE) | LF(WARNING) },
+            { CALCULATE_LED_XY( 1, 10), 0, LD(WEST)  , LF(FLIGHT_MODE) },
+            { CALCULATE_LED_XY( 0, 11), 0, LD(WEST)  , LF(INDICATOR) | LF(ARM_STATE) },
+            { CALCULATE_LED_XY( 0, 11), 0, LD(SOUTH) , LF(INDICATOR) | LF(ARM_STATE) },
+            { CALCULATE_LED_XY( 1, 10), 0, LD(SOUTH) , LF(FLIGHT_MODE) | LF(WARNING) },
+            { CALCULATE_LED_XY( 2,  9), 0, LD(SOUTH) , LF(FLIGHT_MODE) | LF(WARNING) },
 
-            { CALCULATE_LED_XY( 7,  7), 14, LF(THRUST_RING) },
-            { CALCULATE_LED_XY( 8,  7), 15, LF(THRUST_RING) },
-            { CALCULATE_LED_XY( 8,  8), 14, LF(THRUST_RING) },
-            { CALCULATE_LED_XY( 7,  8), 15, LF(THRUST_RING) },
+            { CALCULATE_LED_XY( 7,  7), 14, 0, LF(THRUST_RING) },
+            { CALCULATE_LED_XY( 8,  7), 15, 0, LF(THRUST_RING) },
+            { CALCULATE_LED_XY( 8,  8), 14, 0, LF(THRUST_RING) },
+            { CALCULATE_LED_XY( 7,  8), 15, 0, LF(THRUST_RING) },
 
-            { 0, 0, 0 },
-            { 0, 0, 0 },
+            { 0, 0, 0, 0 },
+            { 0, 0, 0, 0 },
     };
 
     // and
@@ -175,7 +175,8 @@ TEST(LedStripTest, parseLedStripConfig)
         printf("iteration: %d\n", index);
 #endif
         EXPECT_EQ(expectedLedStripConfig[index].xy, ledConfigs(index)->xy);
-        EXPECT_EQ(expectedLedStripConfig[index].flags, ledConfigs(index)->flags);
+        EXPECT_EQ(expectedLedStripConfig[index].function_flags, ledConfigs(index)->function_flags);
+        EXPECT_EQ(expectedLedStripConfig[index].direction_flags, ledConfigs(index)->direction_flags);
         EXPECT_EQ(expectedLedStripConfig[index].color, ledConfigs(index)->color);
     }
 
@@ -197,14 +198,14 @@ TEST(LedStripTest, smallestGridWithCenter)
 
     // and
     static const ledConfig_t testLedConfigs[] = {
-        { CALCULATE_LED_XY( 2,  2), 0, LD(SOUTH) | LD(EAST) | LF(INDICATOR) | LF(ARM_STATE) },
-        { CALCULATE_LED_XY( 2,  1), 0, LD(EAST)             | LF(FLIGHT_MODE) | LF(WARNING) },
-        { CALCULATE_LED_XY( 2,  0), 0, LD(NORTH) | LD(EAST) | LF(INDICATOR) | LF(ARM_STATE) },
-        { CALCULATE_LED_XY( 1,  0), 0, LD(NORTH)            | LF(FLIGHT_MODE) | LF(WARNING) },
-        { CALCULATE_LED_XY( 0,  0), 0, LD(NORTH) | LD(WEST) | LF(INDICATOR) | LF(ARM_STATE) },
-        { CALCULATE_LED_XY( 0,  1), 0, LD(WEST)             | LF(FLIGHT_MODE) | LF(WARNING) },
-        { CALCULATE_LED_XY( 0,  2), 0, LD(SOUTH) | LD(WEST) | LF(INDICATOR) | LF(ARM_STATE) },
-        { CALCULATE_LED_XY( 1,  2), 0, LD(SOUTH)            | LF(FLIGHT_MODE) | LF(WARNING) }
+        { CALCULATE_LED_XY( 2,  2), 0, LD(SOUTH) | LD(EAST) , LF(INDICATOR) | LF(ARM_STATE) },
+        { CALCULATE_LED_XY( 2,  1), 0, LD(EAST)             , LF(FLIGHT_MODE) | LF(WARNING) },
+        { CALCULATE_LED_XY( 2,  0), 0, LD(NORTH) | LD(EAST) , LF(INDICATOR) | LF(ARM_STATE) },
+        { CALCULATE_LED_XY( 1,  0), 0, LD(NORTH)            , LF(FLIGHT_MODE) | LF(WARNING) },
+        { CALCULATE_LED_XY( 0,  0), 0, LD(NORTH) | LD(WEST) , LF(INDICATOR) | LF(ARM_STATE) },
+        { CALCULATE_LED_XY( 0,  1), 0, LD(WEST)             , LF(FLIGHT_MODE) | LF(WARNING) },
+        { CALCULATE_LED_XY( 0,  2), 0, LD(SOUTH) | LD(WEST) , LF(INDICATOR) | LF(ARM_STATE) },
+        { CALCULATE_LED_XY( 1,  2), 0, LD(SOUTH)            , LF(FLIGHT_MODE) | LF(WARNING) }
     };
     memcpy(ledConfigs_arr(), &testLedConfigs, sizeof(testLedConfigs));
 
@@ -232,10 +233,10 @@ TEST(LedStripTest, smallestGrid)
 
     // and
     static const ledConfig_t testLedConfigs[] = {
-        { CALCULATE_LED_XY( 1,  1), 0, LD(SOUTH) | LD(EAST) | LF(INDICATOR) | LF(FLIGHT_MODE) },
-        { CALCULATE_LED_XY( 1,  0), 0, LD(NORTH) | LD(EAST) | LF(INDICATOR) | LF(FLIGHT_MODE) },
-        { CALCULATE_LED_XY( 0,  0), 0, LD(NORTH) | LD(WEST) | LF(INDICATOR) | LF(FLIGHT_MODE) },
-        { CALCULATE_LED_XY( 0,  1), 0, LD(SOUTH) | LD(WEST) | LF(INDICATOR) | LF(FLIGHT_MODE) },
+        { CALCULATE_LED_XY( 1,  1), 0, LD(SOUTH) | LD(EAST) , LF(INDICATOR) | LF(FLIGHT_MODE) },
+        { CALCULATE_LED_XY( 1,  0), 0, LD(NORTH) | LD(EAST) , LF(INDICATOR) | LF(FLIGHT_MODE) },
+        { CALCULATE_LED_XY( 0,  0), 0, LD(NORTH) | LD(WEST) , LF(INDICATOR) | LF(FLIGHT_MODE) },
+        { CALCULATE_LED_XY( 0,  1), 0, LD(SOUTH) | LD(WEST) , LF(INDICATOR) | LF(FLIGHT_MODE) },
     };
     memcpy(ledConfigs_arr(), &testLedConfigs, sizeof(testLedConfigs));
 
@@ -257,45 +258,45 @@ TEST(LedStripTest, smallestGrid)
 }
 
 /*
-        { CALCULATE_LED_XY( 1, 14), 0, LD(SOUTH) | LF(FLIGHT_MODE) | LF(INDICATOR) | LF(FLIGHT_MODE) },
+        { CALCULATE_LED_XY( 1, 14), 0, LD(SOUTH) , LF(FLIGHT_MODE) | LF(INDICATOR) | LF(FLIGHT_MODE) },
 
-        { CALCULATE_LED_XY( 0, 13), 0, LD(WEST)  | LF(INDICATOR) | LF(ARM_STATE) },
-        { CALCULATE_LED_XY( 0, 12), 0, LD(WEST)  | LF(INDICATOR) | LF(ARM_STATE) },
+        { CALCULATE_LED_XY( 0, 13), 0, LD(WEST)  , LF(INDICATOR) | LF(ARM_STATE) },
+        { CALCULATE_LED_XY( 0, 12), 0, LD(WEST)  , LF(INDICATOR) | LF(ARM_STATE) },
 
-        { CALCULATE_LED_XY( 0, 11), 0, LD(WEST)  | LF(FLIGHT_MODE) },
-        { CALCULATE_LED_XY( 0, 10), 0, LD(WEST)  | LF(FLIGHT_MODE) },
-        { CALCULATE_LED_XY( 0,  9), 0, LD(WEST)  | LF(FLIGHT_MODE) },
-        { CALCULATE_LED_XY( 0,  8), 0, LD(WEST)  | LF(FLIGHT_MODE) | LF(WARNING) },
-        { CALCULATE_LED_XY( 0,  7), 0, LD(WEST)  | LF(FLIGHT_MODE) | LF(WARNING) },
-        { CALCULATE_LED_XY( 0,  6), 0, LD(WEST)  | LF(FLIGHT_MODE) | LF(WARNING) },
-        { CALCULATE_LED_XY( 0,  5), 0, LD(WEST)  | LF(FLIGHT_MODE) },
-        { CALCULATE_LED_XY( 0,  4), 0, LD(WEST)  | LF(FLIGHT_MODE) },
-        { CALCULATE_LED_XY( 0,  3), 0, LD(WEST)  | LF(FLIGHT_MODE) },
+        { CALCULATE_LED_XY( 0, 11), 0, LD(WEST)  , LF(FLIGHT_MODE) },
+        { CALCULATE_LED_XY( 0, 10), 0, LD(WEST)  , LF(FLIGHT_MODE) },
+        { CALCULATE_LED_XY( 0,  9), 0, LD(WEST)  , LF(FLIGHT_MODE) },
+        { CALCULATE_LED_XY( 0,  8), 0, LD(WEST)  , LF(FLIGHT_MODE) | LF(WARNING) },
+        { CALCULATE_LED_XY( 0,  7), 0, LD(WEST)  , LF(FLIGHT_MODE) | LF(WARNING) },
+        { CALCULATE_LED_XY( 0,  6), 0, LD(WEST)  , LF(FLIGHT_MODE) | LF(WARNING) },
+        { CALCULATE_LED_XY( 0,  5), 0, LD(WEST)  , LF(FLIGHT_MODE) },
+        { CALCULATE_LED_XY( 0,  4), 0, LD(WEST)  , LF(FLIGHT_MODE) },
+        { CALCULATE_LED_XY( 0,  3), 0, LD(WEST)  , LF(FLIGHT_MODE) },
 
-        { CALCULATE_LED_XY( 0,  2), 0, LD(WEST)  | LF(INDICATOR) | LF(ARM_STATE) },
-        { CALCULATE_LED_XY( 0,  1), 0, LD(WEST)  | LF(INDICATOR) | LF(ARM_STATE) },
+        { CALCULATE_LED_XY( 0,  2), 0, LD(WEST)  , LF(INDICATOR) | LF(ARM_STATE) },
+        { CALCULATE_LED_XY( 0,  1), 0, LD(WEST)  , LF(INDICATOR) | LF(ARM_STATE) },
 
-        { CALCULATE_LED_XY( 1,  0), 0, LD(NORTH) | LF(FLIGHT_MODE) | LF(INDICATOR) | LF(ARM_STATE) },
-        { CALCULATE_LED_XY( 2,  0), 0, LD(NORTH) | LF(FLIGHT_MODE) | LF(ARM_STATE) },
-        { CALCULATE_LED_XY( 3,  0), 0, LD(NORTH) | LF(FLIGHT_MODE) | LF(INDICATOR) | LF(ARM_STATE) },
+        { CALCULATE_LED_XY( 1,  0), 0, LD(NORTH) , LF(FLIGHT_MODE) | LF(INDICATOR) | LF(ARM_STATE) },
+        { CALCULATE_LED_XY( 2,  0), 0, LD(NORTH) , LF(FLIGHT_MODE) | LF(ARM_STATE) },
+        { CALCULATE_LED_XY( 3,  0), 0, LD(NORTH) , LF(FLIGHT_MODE) | LF(INDICATOR) | LF(ARM_STATE) },
 
-        { CALCULATE_LED_XY( 4,  1), 0, LD(EAST)  | LF(INDICATOR) | LF(ARM_STATE) },
-        { CALCULATE_LED_XY( 4,  2), 0, LD(EAST)  | LF(INDICATOR) | LF(ARM_STATE) },
+        { CALCULATE_LED_XY( 4,  1), 0, LD(EAST)  , LF(INDICATOR) | LF(ARM_STATE) },
+        { CALCULATE_LED_XY( 4,  2), 0, LD(EAST)  , LF(INDICATOR) | LF(ARM_STATE) },
 
-        { CALCULATE_LED_XY( 4,  3), 0, LD(EAST)  | LF(FLIGHT_MODE) },
-        { CALCULATE_LED_XY( 4,  4), 0, LD(EAST)  | LF(FLIGHT_MODE) },
-        { CALCULATE_LED_XY( 4,  5), 0, LD(EAST)  | LF(FLIGHT_MODE) },
-        { CALCULATE_LED_XY( 4,  6), 0, LD(EAST)  | LF(FLIGHT_MODE) | LF(WARNING) },
-        { CALCULATE_LED_XY( 4,  7), 0, LD(EAST)  | LF(FLIGHT_MODE) | LF(WARNING) },
-        { CALCULATE_LED_XY( 4,  8), 0, LD(EAST)  | LF(FLIGHT_MODE) | LF(WARNING) },
-        { CALCULATE_LED_XY( 4,  9), 0, LD(EAST)  | LF(FLIGHT_MODE) },
-        { CALCULATE_LED_XY( 4, 10), 0, LD(EAST)  | LF(FLIGHT_MODE) },
-        { CALCULATE_LED_XY( 4, 11), 0, LD(EAST)  | LF(FLIGHT_MODE) },
+        { CALCULATE_LED_XY( 4,  3), 0, LD(EAST)  , LF(FLIGHT_MODE) },
+        { CALCULATE_LED_XY( 4,  4), 0, LD(EAST)  , LF(FLIGHT_MODE) },
+        { CALCULATE_LED_XY( 4,  5), 0, LD(EAST)  , LF(FLIGHT_MODE) },
+        { CALCULATE_LED_XY( 4,  6), 0, LD(EAST)  , LF(FLIGHT_MODE) | LF(WARNING) },
+        { CALCULATE_LED_XY( 4,  7), 0, LD(EAST)  , LF(FLIGHT_MODE) | LF(WARNING) },
+        { CALCULATE_LED_XY( 4,  8), 0, LD(EAST)  , LF(FLIGHT_MODE) | LF(WARNING) },
+        { CALCULATE_LED_XY( 4,  9), 0, LD(EAST)  , LF(FLIGHT_MODE) },
+        { CALCULATE_LED_XY( 4, 10), 0, LD(EAST)  , LF(FLIGHT_MODE) },
+        { CALCULATE_LED_XY( 4, 11), 0, LD(EAST)  , LF(FLIGHT_MODE) },
 
-        { CALCULATE_LED_XY( 4, 12), 0, LD(EAST)  | LF(INDICATOR) | LF(ARM_STATE) },
-        { CALCULATE_LED_XY( 4, 13), 0, LD(EAST)  | LF(INDICATOR) | LF(ARM_STATE) },
+        { CALCULATE_LED_XY( 4, 12), 0, LD(EAST)  , LF(INDICATOR) | LF(ARM_STATE) },
+        { CALCULATE_LED_XY( 4, 13), 0, LD(EAST)  , LF(INDICATOR) | LF(ARM_STATE) },
 
-        { CALCULATE_LED_XY( 3, 14), 0, LD(SOUTH) | LF(FLIGHT_MODE) | LF(INDICATOR) | LF(ARM_STATE) },
+        { CALCULATE_LED_XY( 3, 14), 0, LD(SOUTH) , LF(FLIGHT_MODE) | LF(INDICATOR) | LF(ARM_STATE) },
 
  */
 
@@ -420,7 +421,8 @@ int scaleRange(int x, int srcMin, int srcMax, int destMin, int destMax) {
 bool rcModeIsActive(boxId_e modeId) { return rcModeActivationMask & (1 << modeId); }
 bool failsafeIsActive() { return false; }
 bool rxIsReceivingSignal() { return true; }
-    bool sensors(uint32_t mask) { UNUSED(mask); return true; }
+bool sensors(uint32_t mask) { UNUSED(mask); return true; }
+uint8_t calculateBatteryCapacityRemainingPercentage(void) { return 40; }
 
 uint8_t GPS_numSat;
 uint8_t stateFlags;

@@ -21,11 +21,8 @@
 #define LED_CONFIGURABLE_COLOR_COUNT   16
 #define LED_MODE_COUNT                  6
 #define LED_DIRECTION_COUNT             6
-#define LED_FUNCTION_COUNT             10
-#define LED_SPECIAL_COLOR_COUNT         8
-
-#define LED_DIRECTION_BIT_OFFSET 0
-#define LED_FUNCTION_BIT_OFFSET LED_DIRECTION_COUNT
+#define LED_FUNCTION_COUNT             11
+#define LED_SPECIAL_COLOR_COUNT        11
 
 typedef enum {
     LED_MODE_ORIENTATION = 0,
@@ -57,9 +54,9 @@ typedef enum {
     LED_DIRECTION_DOWN
 } ledDirectionId_e;
 
-#define LED_FLAG_DIRECTION(directionId) (1 << (LED_DIRECTION_BIT_OFFSET + (directionId)))
+#define LED_FLAG_DIRECTION(directionId) (1 << (directionId))
 // generate direction bit, used in initializers
-#define LED_FLAG_DIRECTION_MASK (((1 << LED_DIRECTION_COUNT) - 1) << LED_DIRECTION_BIT_OFFSET)
+#define LED_FLAG_DIRECTION_MASK ((1 << LED_DIRECTION_COUNT) - 1)
 
 typedef enum {
     LED_FUNCTION_INDICATOR,
@@ -72,11 +69,12 @@ typedef enum {
     LED_FUNCTION_GPS,
     LED_FUNCTION_RSSI,
     LED_FUNCTION_BLINK,
+    LED_FUNCTION_BATTERY,
 } ledFunctionId_e;
 
-#define LED_FLAG_FUNCTION(functionId) (1 << (LED_FUNCTION_BIT_OFFSET + (functionId)))
+#define LED_FLAG_FUNCTION(functionId) (1 << (functionId))
 // generate direction bit, used in initializers
-#define LED_FLAG_FUNCTION_MASK (((1 << LED_FUNCTION_COUNT) - 1) << LED_FUNCTION_BIT_OFFSET)
+#define LED_FLAG_FUNCTION_MASK ((1 << LED_FUNCTION_COUNT) - 1)
 
 typedef struct modeColorIndexes_s {
     uint8_t color[LED_DIRECTION_COUNT];
@@ -89,7 +87,8 @@ typedef struct specialColorIndexes_s {
 typedef struct ledConfig_s {
     uint8_t xy;     // see LED_X/Y_MASK defines
     uint8_t color;  // see colors (config_master)
-    uint16_t flags; // see LED_FLAG_FUNCTION + LED_FLAG_DIRECTION
+    uint8_t direction_flags; // see LED_FLAG_DIRECTION
+    uint16_t function_flags; // see LED_FLAG_FUNCTION
 } ledConfig_t;
 
 #define LED_X_BIT_OFFSET 4

@@ -943,8 +943,8 @@ static int processOutCommand(mspPacket_t *cmd, mspPacket_t *reply)
         case MSP_LED_STRIP_CONFIG:
             for (int i = 0; i < LED_MAX_STRIP_LENGTH; i++) {
                 ledConfig_t *ledConfig = ledConfigs(i);
-                sbufWriteU16(dst, (ledConfig->flags & LED_FLAG_DIRECTION_MASK) >> LED_DIRECTION_BIT_OFFSET);
-                sbufWriteU16(dst, (ledConfig->flags & LED_FLAG_FUNCTION_MASK) >> LED_FUNCTION_BIT_OFFSET);
+                sbufWriteU16(dst, (ledConfig->direction_flags & LED_FLAG_DIRECTION_MASK));
+                sbufWriteU16(dst, (ledConfig->function_flags & LED_FLAG_FUNCTION_MASK));
                 sbufWriteU8(dst, ledGetX(ledConfig));
                 sbufWriteU8(dst, ledGetY(ledConfig));
                 sbufWriteU8(dst, ledConfig->color);
@@ -1482,14 +1482,15 @@ static int processInCommand(mspPacket_t *cmd)
 
             ledConfig_t *ledConfig = ledConfigs(i);
             uint16_t mask;
-            uint16_t flags;
-            // currently we're storing directions and functions in a uint16 (flags)
-            // the msp uses 2 x uint16_t to cater for future expansion
+            uint8_t direction_flags;
+            uint16_t function_flags;
+            // the msp uses 2 x uint16_t
             mask = sbufReadU16(src);
-            flags = (mask << LED_DIRECTION_BIT_OFFSET) & LED_FLAG_DIRECTION_MASK;
+            direction_flags = (mask) & LED_FLAG_DIRECTION_MASK;
             mask = sbufReadU16(src);
-            flags |= (mask << LED_FUNCTION_BIT_OFFSET) & LED_FLAG_FUNCTION_MASK;
-            ledConfig->flags = flags;
+            function_flags = (mask) & LED_FLAG_FUNCTION_MASK;
+            ledConfig->direction_flags = direction_flags;
+            ledConfig->function_flags = function_flags;
 
             int x = sbufReadU8(src);
             int y = sbufReadU8(src);
