@@ -869,6 +869,7 @@ static int processOutCommand(mspPacket_t *cmd, mspPacket_t *reply)
             sbufWriteU16(dst, batteryConfig()->currentMeterOffset);
             sbufWriteU8(dst, batteryConfig()->currentMeterType);
             sbufWriteU16(dst, batteryConfig()->batteryCapacity);
+            sbufWriteU16(dst, (uint16_t)constrain(mAhDrawn, 0, 0xFFFF)); // milliamp hours drawn from battery
             break;
 
         case MSP_MIXER:
@@ -1372,6 +1373,7 @@ static int processInCommand(mspPacket_t *cmd)
             batteryConfig()->currentMeterOffset = sbufReadU16(src);
             batteryConfig()->currentMeterType = sbufReadU8(src);
             batteryConfig()->batteryCapacity = sbufReadU16(src);
+            setMahDrawn((int32_t)sbufReadU16(src)); // 1.20.0
             break;
 
 #ifndef USE_QUAD_MIXER_ONLY

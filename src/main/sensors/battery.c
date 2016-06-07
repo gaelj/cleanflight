@@ -49,7 +49,7 @@ uint8_t batteryCellCount = 3;       // cell count
 uint16_t batteryWarningVoltage;
 uint16_t batteryCriticalVoltage;
 
-uint16_t vbat = 0;                   // battery voltage in 0.1V steps (filtered)
+uint16_t vbat = 0;                  // battery voltage in 0.1V steps (filtered)
 uint16_t vbatLatestADC = 0;         // most recent unsmoothed raw reading from vbat ADC
 uint16_t amperageLatestADC = 0;     // most recent raw reading from current ADC
 
@@ -58,6 +58,8 @@ int32_t mAhDrawn = 0;               // milliampere hours drawn from the battery 
 
 static batteryState_e batteryState;
 static biquad_t vbatFilterState;
+
+static int64_t mAhdrawnRaw = 0;
 
 PG_REGISTER_WITH_RESET_TEMPLATE(batteryConfig_t, batteryConfig, PG_BATTERY_CONFIG, 0);
 
@@ -194,7 +196,6 @@ int32_t currentSensorToCentiamps(uint16_t src)
 void updateCurrentMeter(int32_t lastUpdateAt, throttleStatus_e throttleStatus)
 {
     static int32_t amperageRaw = 0;
-    static int64_t mAhdrawnRaw = 0;
     int32_t throttleOffset = (int32_t)rcCommand[THROTTLE] - 1000;
     int32_t throttleFactor = 0;
 
@@ -220,6 +221,11 @@ void updateCurrentMeter(int32_t lastUpdateAt, throttleStatus_e throttleStatus)
 
     mAhdrawnRaw += (MAX(0, amperage) * lastUpdateAt) / 1000;
     mAhDrawn = mAhdrawnRaw / (3600 * 100);
+}
+
+void setMahDrawn(int32_t mAhDrawn)
+{
+    mAhdrawnRaw = mAhDrawn * (3600 * 100);
 }
 
 uint8_t calculateBatteryPercentage(void)
