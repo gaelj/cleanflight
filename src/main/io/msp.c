@@ -794,6 +794,7 @@ static int processOutCommand(mspPacket_t *cmd, mspPacket_t *reply)
             sbufWriteU16(dst, GPS_altitude);
             sbufWriteU16(dst, GPS_speed);
             sbufWriteU16(dst, GPS_ground_course);
+            sbufWriteU16(dst, GPS_hdop);
             break;
 
         case MSP_COMP_GPS:
